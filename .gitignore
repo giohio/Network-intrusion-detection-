@@ -25,9 +25,6 @@ env/
 *.log
 *.sqlite3
 
-# Model and data files
-*.pkl
-
 # macOS
 .DS_Store
 
