@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Status Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .device-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .device-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 200px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .normal {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .attack {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Device Status Dashboard</h1>
+    <div class="device-container" id="device-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const deviceContainer = document.getElementById("device-container");
+        const deviceStates = {};
+
+        // Nhận dữ liệu thời gian thực từ WebSocket
+        socket.on("device_status", (data) => {
+            console.log("Received data:", data);
+            const { device_id, timestamp, status, original_label } = data;
+            deviceStates[device_id] = { status, timestamp, original_label };
+            updateDashboard();
+        });
+
+        function updateDashboard() {
+            deviceContainer.innerHTML = "";
+            for (const [device_id, info] of Object.entries(deviceStates)) {
+                const deviceBox = document.createElement("div");
+                deviceBox.className = `device-box ${info.status.toLowerCase()}`;
+                deviceBox.innerHTML = `
+                    <h3>${device_id}</h3>
+                    <p>Status: ${info.status}</p>
+                    <p>Time: ${new Date(info.timestamp).toLocaleString()}</p>
+                    <p>Original Label: ${info.original_label}</p>
+                `;
+                deviceContainer.appendChild(deviceBox);
+            }
+        }
+    </script>
+</body>
+</html>
