@@ -26,7 +26,6 @@ def kafka_listener():
 # Route để hiển thị trang web
 @app.route("/")
 def index():
-    # Không truy vấn MongoDB, trả về template trực tiếp
     return render_template("index.html")
 
 if __name__ == "__main__":
